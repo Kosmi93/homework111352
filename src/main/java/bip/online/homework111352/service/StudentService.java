@@ -3,8 +3,7 @@ package bip.online.homework111352.service;
 import bip.online.homework111352.model.Student;
 import org.springframework.stereotype.Service;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 @Service
 public class StudentService implements CRUDRepository<Student, Long> {
@@ -45,5 +44,15 @@ public class StudentService implements CRUDRepository<Student, Long> {
     @Override
     public Student findById(Long id) {
         return students.get(id);
+    }
+
+    public Collection<Student> findByAge(int age){
+        List<Student> result = new ArrayList<>();
+        for (Student student : students.values()) {
+            if (student.getAge() == age) {
+                result.add(student);
+            }
+        }
+        return result;
     }
 }

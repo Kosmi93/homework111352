@@ -3,8 +3,7 @@ package bip.online.homework111352.service;
 import bip.online.homework111352.model.Faculty;
 import org.springframework.stereotype.Service;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 @Service
 public class FacultyService implements CRUDRepository<Faculty, Long> {
@@ -45,5 +44,15 @@ public class FacultyService implements CRUDRepository<Faculty, Long> {
     @Override
     public Faculty findById(Long id) {
         return faculties.get(id);
+    }
+
+    public Collection<Faculty> findByColor(String color){
+        List<Faculty> result = new ArrayList<>();
+        for (Faculty faculty : faculties.values()) {
+            if (Objects.equals(faculty.getColor(), color)) {
+                result.add(faculty);
+            }
+        }
+        return result;
     }
 }

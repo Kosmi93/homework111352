@@ -7,6 +7,9 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Collection;
+import java.util.Collections;
+
 @RestController
 @RequestMapping("/student")
 @Tag(name = "Контроллер по работе со студентами", description = "Контроллер выполняет операции со студентами в университете")
@@ -55,5 +58,13 @@ public class StudentController {
     @PutMapping("/update")
     public ResponseEntity<Student> update(@RequestBody Student student) {
         return ResponseEntity.ok(service.update(student));
+    }
+
+    @GetMapping("/search")
+    public ResponseEntity<Collection<Student>> findStudents(@RequestParam int age){
+        if (age > 0) {
+            return ResponseEntity.ok(service.findByAge(age));
+        }
+        return ResponseEntity.ok(Collections.emptyList());
     }
 }
