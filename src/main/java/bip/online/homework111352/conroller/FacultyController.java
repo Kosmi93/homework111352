@@ -20,6 +20,7 @@ public class FacultyController {
     public FacultyController(FacultyService service) {
         this.service = service;
     }
+
     @GetMapping("/search")
     public ResponseEntity<Collection<Faculty>> findFaculties(@RequestParam String color) {
         if (color != null && !color.isBlank()) {
@@ -46,7 +47,7 @@ public class FacultyController {
     )
     @GetMapping
     public ResponseEntity<Faculty> get(@RequestParam Long id) {
-        return ResponseEntity.ok(service.findById(id));
+        return ResponseEntity.ok(service.findById(id).orElseThrow());
     }
 
     @Operation(
@@ -68,5 +69,5 @@ public class FacultyController {
         return ResponseEntity.ok(service.update(faculty));
     }
 
-   
+
 }
