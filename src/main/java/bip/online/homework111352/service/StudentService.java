@@ -1,49 +1,37 @@
 package bip.online.homework111352.service;
 
 import bip.online.homework111352.model.Student;
+import bip.online.homework111352.repo.StudentRepo;
 import org.springframework.stereotype.Service;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.Collection;
+import java.util.Optional;
 
 @Service
-public class StudentService implements CRUDRepository<Student, Long> {
+public class StudentService {
+    private final StudentRepo repo;
 
-    private final Map<Long, Student> students;
-    private Long count;
-
-    public StudentService() {
-        this.students = new HashMap<>();
-        count = 0L;
+    public StudentService(StudentRepo repo) {
+        this.repo = repo;
     }
 
-    @Override
-    public Student save(Student data) {
-        if (data != null) {
-            data.setId(count);
-            students.put(count, data);
-            count++;
-        } else
-            throw new RuntimeException("В системе нельзя хранить null");
-        return data;
+    public Collection<Student> findByAge(int age) {
+        return repo.findByAge(age);
     }
 
-    @Override
+    public Student update(Student student) {
+        return repo.save(student);
+    }
+
     public void delete(Long id) {
-        students.remove(id);
+        repo.deleteById(id);
     }
 
-    @Override
-    public Student update(Student data) {
-        if (data != null) {
-            students.replace(data.getId(), data);
-        } else
-            throw new RuntimeException("В системе нельзя хранить null");
-        return data;
+    public Optional<Student> findById(Long id) {
+        return repo.findById(id);
     }
 
-    @Override
-    public Student findById(Long id) {
-        return students.get(id);
+    public Student save(Student student) {
+        return repo.save(student);
     }
 }
