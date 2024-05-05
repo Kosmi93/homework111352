@@ -1,10 +1,7 @@
 package bip.online.homework111352.model;
 
 import io.swagger.v3.oas.annotations.media.Schema;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 import lombok.Data;
 
 @Entity
@@ -19,4 +16,8 @@ public class Student {
     private String name;
     @Schema(description = "Возраст", example = "16")
     private int age;
+    @Schema(description = "Факультет на котором обучается студент", example = "1")
+    @ManyToOne
+    @JoinColumn(name = "faculty_id")
+    Faculty faculty;
 }

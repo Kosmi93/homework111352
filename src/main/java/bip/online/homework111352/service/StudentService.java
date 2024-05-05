@@ -34,4 +34,8 @@ public class StudentService {
     public Student save(Student student) {
         return repo.save(student);
     }
+
+    public Collection<Student> findByAge(int min, int max){
+        return repo.findByAgeBetween(min,max);
+    }
 }

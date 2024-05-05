@@ -1,11 +1,11 @@
 package bip.online.homework111352.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import io.swagger.v3.oas.annotations.media.Schema;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 import lombok.Data;
+
+import java.util.List;
 
 @Entity
 @Data
@@ -19,4 +19,7 @@ public class Faculty {
     private String name;
     @Schema(description = "Цвет флага",example ="Какой-цвет")
     private String color;
+    @JsonIgnore
+    @OneToMany(mappedBy = "faculty")
+    List<Student>students;
 }

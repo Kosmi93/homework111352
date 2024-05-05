@@ -46,11 +46,21 @@ public class StudentController {
         return ResponseEntity.ok(service.update(student));
     }
 
+    @Operation(summary = "Поиск студентов конкретного возраста", description = "Позволяет найти студентов с заданным возрастом")
     @GetMapping("/search")
     public ResponseEntity<Collection<Student>> findStudents(@RequestParam int age) {
         if (age > 0) {
             return ResponseEntity.ok(service.findByAge(age));
         }
         return ResponseEntity.ok(Collections.emptyList());
+    }
+
+    @Operation(summary = "Поиск студентов по заданному диапазону возрастов", description = "Позволяет найти студентов по заданному диапазону возрастов")
+    @GetMapping("/search-age")
+    public ResponseEntity<Collection<Student>> findAge(@RequestParam int min,@RequestParam int max) {
+        if (max > min) {
+            return ResponseEntity.ok(service.findByAge(min, max));
+        }
+        return ResponseEntity.noContent().build();
     }
 }

@@ -22,9 +22,12 @@ public class FacultyController {
     }
 
     @GetMapping("/search")
-    public ResponseEntity<Collection<Faculty>> findFaculties(@RequestParam String color) {
-        if (color != null && !color.isBlank()) {
+    public ResponseEntity<Collection<Faculty>> findFaculties(@RequestParam(required = false) String color, @RequestParam(required = false) String name) {
+        if (color != null && !color.isBlank()){
             return ResponseEntity.ok(service.findByColor(color));
+        }
+        if(name != null && !name.isBlank()) {
+            return ResponseEntity.ok(service.findByName(name));
         }
         return ResponseEntity.ok(Collections.emptyList());
     }
