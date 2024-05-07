@@ -1,5 +1,6 @@
 package bip.online.homework111352.conroller;
 
+import bip.online.homework111352.model.Faculty;
 import bip.online.homework111352.model.Student;
 import bip.online.homework111352.service.StudentService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -57,10 +58,26 @@ public class StudentController {
 
     @Operation(summary = "Поиск студентов по заданному диапазону возрастов", description = "Позволяет найти студентов по заданному диапазону возрастов")
     @GetMapping("/search-age")
-    public ResponseEntity<Collection<Student>> findAge(@RequestParam int min,@RequestParam int max) {
+    public ResponseEntity<Collection<Student>> findAge(@RequestParam int min, @RequestParam int max) {
         if (max > min) {
             return ResponseEntity.ok(service.findByAge(min, max));
         }
         return ResponseEntity.noContent().build();
+    }
+
+    @Operation(summary = "Поиск студентов факультета", description = "Позволяет найти всех студентов заданном факультете")
+    @GetMapping("/search-faculty")
+    public ResponseEntity<Collection<Student>> findStudentInFaculty(@RequestParam String name) {
+        if (!name.isBlank()) {
+            return ResponseEntity.ok(service.findByFaculty(name));
+        }
+        return ResponseEntity.noContent().build();
+    }
+
+    @Operation(summary = "Получение факультета студента", description = "Позволяет получить факультет студента")
+    @GetMapping("/faculty")
+    public ResponseEntity<Faculty> getFacultyForStudent(@RequestParam Long id) {
+        return ResponseEntity.ok(service.findById(id).orElseThrow().getFaculty());
+
     }
 }
