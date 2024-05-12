@@ -18,6 +18,12 @@ public class Student {
     private int age;
     @Schema(description = "Факультет на котором обучается студент", example = "1")
     @ManyToOne
-    @JoinColumn(name = "faculty_id")
     Faculty faculty;
+    @OneToOne(cascade = CascadeType.ALL)
+    Avatar avatar;
+
+    @Override
+    public String toString() {
+        return id + name ;
+    }
 }

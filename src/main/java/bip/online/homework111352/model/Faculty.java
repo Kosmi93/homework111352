@@ -22,4 +22,13 @@ public class Faculty {
     @JsonIgnore
     @OneToMany(mappedBy = "faculty")
     List<Student>students;
+
+    @Override
+    public String toString() {
+        return "Faculty{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", color='" + color + '\'' +
+                '}';
+    }
 }
