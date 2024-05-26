@@ -78,6 +78,23 @@ public class StudentController {
     @GetMapping("/faculty")
     public ResponseEntity<Faculty> getFacultyForStudent(@RequestParam Long id) {
         return ResponseEntity.ok(service.findById(id).orElseThrow().getFaculty());
+    }
 
+    @Operation(summary = "Получениt количества студентов", description = "Позволяет получить количество студентов в школе")
+    @GetMapping("/count")
+    public ResponseEntity<Integer> getCount() {
+        return ResponseEntity.ok(service.getCount());
+    }
+
+    @Operation(summary = "Получение среднего возраста студентов", description = "Позволяет получить средний возраст студентов")
+    @GetMapping("/avg")
+    public ResponseEntity<Double> getAvgAge() {
+        return ResponseEntity.ok(service.getAvgAge());
+    }
+
+    @Operation(summary = "Последние 5 студентов", description = "Позволяет только пять последних студентов")
+    @GetMapping("/last-five")
+    public ResponseEntity<Collection<Student>> getLastFive() {
+            return ResponseEntity.ok(service.getEndFive());
     }
 }

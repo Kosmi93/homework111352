@@ -52,4 +52,16 @@ public class StudentService {
         } else
             return List.of();
     }
+
+    public int getCount(){
+        return studentRepo.countStudents();
+    }
+
+    public double getAvgAge(){
+        return studentRepo.avgAge();
+    }
+
+    public Collection<Student> getEndFive(){
+        return studentRepo.endFiveStudents();
+    }
 }
