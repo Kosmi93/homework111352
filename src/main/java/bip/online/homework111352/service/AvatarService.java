@@ -14,6 +14,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Collection;
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -68,11 +69,8 @@ public class AvatarService {
         return fileName.substring(fileName.lastIndexOf(".") + 1);
     }
 
-    /*public Collection<Avatar> pagination(int page, int size){
-        return avatarRepo.findAllPagination(page,size);
-    }*/
-    public Page<Avatar> paginationV2(int page, int size){
+    public List<Avatar> pagination(int page, int size) {
         PageRequest pageRequest = PageRequest.of(page - 1, size);
-        return avatarRepo.findAll(pageRequest);
+        return avatarRepo.findAll(pageRequest).getContent();
     }
 }

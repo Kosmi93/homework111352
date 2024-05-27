@@ -1,5 +1,6 @@
 package bip.online.homework111352.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.persistence.*;
 import lombok.Data;
@@ -14,6 +15,7 @@ public class Avatar {
     private String filePath;
     private long fileSize;
     private String mediaType;
+    @JsonIgnore
     private byte[] data;
     @OneToOne
     private Student student;

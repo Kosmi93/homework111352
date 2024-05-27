@@ -18,6 +18,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.List;
 
 
 @RestController
@@ -71,32 +72,8 @@ public class AvatarController {
     }
 
     @GetMapping(value = "/page")
-    public String downloadAvatarPage(@RequestParam int pageNumber, @RequestParam int count) throws IOException {
-        Page<Avatar> page = service.paginationV2(pageNumber, count);
-        StringBuilder table = new StringBuilder();
-        table.append("<table >");
-        page.getContent().forEach(e -> table.append("<tr><td><img src=\"").append(e.getFilePath()).append("\"></td></tr>"));
-        table.append("</table>");
-        System.out.println(table);
-
-
-        return """
-                <!DOCTYPE html>
-                <html lang="ru">
-                <head>
-                    <meta charset="UTF-8">
-                    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-                    <title>Аватарки</title>                   
-                </head>
-                <body>                   
-                    <header>
-                        <h1>Аватарки</h1>
-                    </header>"""+
-                table +
-                """     
-                </body>
-                </html>
-                """;
+    public List<Avatar> downloadAvatarPage(@RequestParam int pageNumber, @RequestParam int count) {
+        return service.pagination(pageNumber, count);
     }
 
 }
