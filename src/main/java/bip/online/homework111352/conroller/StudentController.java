@@ -5,6 +5,7 @@ import bip.online.homework111352.model.Student;
 import bip.online.homework111352.service.StudentService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -31,14 +32,24 @@ public class StudentController {
     @Operation(summary = "Получение студента", description = "Позволяет получить студента из системы по его id")
     @GetMapping
     public ResponseEntity<Student> get(@RequestParam Long id) {
-        return ResponseEntity.ok(service.findById(id).orElseThrow());
+        if(service.findById(id).isEmpty()){
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+        } else{
+            return ResponseEntity.ok(service.findById(id).get());
+        }
+
     }
 
     @Operation(summary = "Удаление студента", description = "Позволяет удалить студента из системы по его id")
     @DeleteMapping
     public ResponseEntity delete(@RequestParam Long id) {
-        service.delete(id);
-        return ResponseEntity.ok().build();
+        if(service.findById(id).isEmpty()){
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+        } else{
+            service.delete(id);
+            return ResponseEntity.ok().build();
+        }
+
     }
 
     @Operation(summary = "Редактирование студента", description = "Позволяет отредактировать студента в системе")

@@ -32,8 +32,14 @@ public class Student {
     public Student() {
     }
 
+    public Student(Long id, String name, int age) {
+        this.id = id;
+        this.name = name;
+        this.age = age;
+    }
+
     @Override
     public String toString() {
-        return id + name ;
+        return id + name;
     }
 }

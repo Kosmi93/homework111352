@@ -1,6 +1,5 @@
 package bip.online.homework111352.conroller;
 
-import bip.online.homework111352.model.Faculty;
 import bip.online.homework111352.model.Student;
 import bip.online.homework111352.repo.AvatarRepo;
 import bip.online.homework111352.repo.FacultyRepo;
@@ -20,7 +19,6 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
-import java.util.List;
 import java.util.Optional;
 
 import static bip.online.homework111352.TestConstant.*;
@@ -66,10 +64,10 @@ public class StudentWebMvcTest {
     @Test
     public void saveTest() throws Exception {
 
-        when(studentRepo.save(any(Student.class))).thenReturn(MOCK_STUDENT);
+        when(studentRepo.save(any(Student.class))).thenReturn(MOCK_STUDENT_AND_FACULTY);
         JSONObject createStudent = new JSONObject();
-        createStudent.put("name", MOCK_STYDENT_NAME);
-        createStudent.put("age", MOCK_STYDENT_AGE);
+        createStudent.put("name", MOCK_STUDENT_NAME);
+        createStudent.put("age", MOCK_STUDENT_AGE);
 
         mockMvc.perform(MockMvcRequestBuilders
                         .post("/student") //send
@@ -77,20 +75,20 @@ public class StudentWebMvcTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())//receive;
-                .andExpect(jsonPath("$.id").value(MOCK_STYDENT_ID))
-                .andExpect(jsonPath("$.age").value(MOCK_STYDENT_AGE))
-                .andExpect(jsonPath("$.name").value(MOCK_STYDENT_NAME));
+                .andExpect(jsonPath("$.id").value(MOCK_STUDENT_ID))
+                .andExpect(jsonPath("$.age").value(MOCK_STUDENT_AGE))
+                .andExpect(jsonPath("$.name").value(MOCK_STUDENT_NAME));
 
     }
 
     @Test
     public void updateTest() throws Exception {
 
-        when(studentRepo.save(any(Student.class))).thenReturn(MOCK_STUDENT);
+        when(studentRepo.save(any(Student.class))).thenReturn(MOCK_STUDENT_AND_FACULTY);
         JSONObject createStudent = new JSONObject();
-        createStudent.put("id", MOCK_STYDENT_ID);
-        createStudent.put("name", MOCK_STYDENT_NAME);
-        createStudent.put("age", MOCK_STYDENT_AGE);
+        createStudent.put("id", MOCK_STUDENT_ID);
+        createStudent.put("name", MOCK_STUDENT_NAME);
+        createStudent.put("age", MOCK_STUDENT_AGE);
 
         mockMvc.perform(MockMvcRequestBuilders
                         .put("/student/update") //send
@@ -98,23 +96,23 @@ public class StudentWebMvcTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())//receive;
-                .andExpect(jsonPath("$.id").value(MOCK_STYDENT_ID))
-                .andExpect(jsonPath("$.age").value(MOCK_STYDENT_AGE))
-                .andExpect(jsonPath("$.name").value(MOCK_STYDENT_NAME));
+                .andExpect(jsonPath("$.id").value(MOCK_STUDENT_ID))
+                .andExpect(jsonPath("$.age").value(MOCK_STUDENT_AGE))
+                .andExpect(jsonPath("$.name").value(MOCK_STUDENT_NAME));
 
     }
 
     @Test
     public void getTest() throws Exception {
-        when(studentRepo.findById(any(Long.class))).thenReturn(Optional.of(MOCK_STUDENT));
+        when(studentRepo.findById(any(Long.class))).thenReturn(Optional.of(MOCK_STUDENT_AND_FACULTY));
 
         mockMvc.perform(MockMvcRequestBuilders
-                        .get("/student?id=" + MOCK_STYDENT_ID) //send
+                        .get("/student?id=" + MOCK_STUDENT_ID) //send
                         .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())//receive;
-                .andExpect(jsonPath("$.id").value(MOCK_STYDENT_ID))
-                .andExpect(jsonPath("$.age").value(MOCK_STYDENT_AGE))
-                .andExpect(jsonPath("$.name").value(MOCK_STYDENT_NAME));
+                .andExpect(jsonPath("$.id").value(MOCK_STUDENT_ID))
+                .andExpect(jsonPath("$.age").value(MOCK_STUDENT_AGE))
+                .andExpect(jsonPath("$.name").value(MOCK_STUDENT_NAME));
     }
 
     @Test
@@ -122,7 +120,7 @@ public class StudentWebMvcTest {
         when(studentRepo.findByAge(any(Integer.class))).thenReturn(MOCK_STUDENTS);
 
         mockMvc.perform(MockMvcRequestBuilders
-                        .get("/student/search?age=" + MOCK_STYDENT_AGE) //send
+                        .get("/student/search?age=" + MOCK_STUDENT_AGE) //send
                         .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk());//receive;
     }
@@ -130,8 +128,8 @@ public class StudentWebMvcTest {
     @Test
     public void searchAgePeriodTest() throws Exception {
 
-        int min = MOCK_STYDENT_AGE - 1;
-        int max = MOCK_STYDENT_AGE + 1;
+        int min = MOCK_STUDENT_AGE - 1;
+        int max = MOCK_STUDENT_AGE + 1;
 
         when(studentRepo.findByAge(any(Integer.class))).thenReturn(MOCK_STUDENTS);
 
@@ -153,7 +151,7 @@ public class StudentWebMvcTest {
 
     @Test
     public void searchFacultyForStudentTest() throws Exception {
-        when(studentRepo.findById(any(Long.class))).thenReturn(Optional.of(MOCK_STUDENT));
+        when(studentRepo.findById(any(Long.class))).thenReturn(Optional.of(MOCK_STUDENT_AND_FACULTY));
 
         mockMvc.perform(MockMvcRequestBuilders
                         .get("/student/faculty?id=" + MOCK_FACULTY_ID) //send
