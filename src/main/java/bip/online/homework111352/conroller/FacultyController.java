@@ -21,6 +21,11 @@ public class FacultyController {
         this.service = service;
     }
 
+    @GetMapping("/all")
+    public ResponseEntity<Collection<Faculty>> getAll() {
+        return ResponseEntity.ok(service.getAll());
+    }
+
     @GetMapping("/search")
     public ResponseEntity<Collection<Faculty>> findFaculties(@RequestParam(required = false) String color, @RequestParam(required = false) String name) {
         if (color != null && !color.isBlank()){

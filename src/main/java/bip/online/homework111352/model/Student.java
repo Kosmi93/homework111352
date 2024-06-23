@@ -22,6 +22,16 @@ public class Student {
     @OneToOne(cascade = CascadeType.ALL)
     Avatar avatar;
 
+    public Student(Long id, String name, int age, Faculty faculty) {
+        this.id = id;
+        this.name = name;
+        this.age = age;
+        this.faculty = faculty;
+    }
+
+    public Student() {
+    }
+
     @Override
     public String toString() {
         return id + name ;

@@ -23,6 +23,7 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import java.util.List;
 import java.util.Optional;
 
+import static bip.online.homework111352.TestConstant.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -64,149 +65,98 @@ public class StudentWebMvcTest {
 
     @Test
     public void saveTest() throws Exception {
-        Long id = 555L;
-        String name = "Инокентий";
 
-        JSONObject studentObject = new JSONObject();
-        studentObject.put("name", name);
-        Student student =new Student();
-        student.setId(id);
-        student.setName(name);
-
-        when(studentRepo.save(any(Student.class))).thenReturn(student);
-        when(studentRepo.findById(any(Long.class))).thenReturn(Optional.of(student));
+        when(studentRepo.save(any(Student.class))).thenReturn(MOCK_STUDENT);
+        JSONObject createStudent = new JSONObject();
+        createStudent.put("name", MOCK_STYDENT_NAME);
+        createStudent.put("age", MOCK_STYDENT_AGE);
 
         mockMvc.perform(MockMvcRequestBuilders
                         .post("/student") //send
-                        .content(studentObject.toString())
+                        .content(createStudent.toString())
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())//receive;
-                .andExpect(jsonPath("$.id").value(id))
-                .andExpect(jsonPath("$.name").value(name));
+                .andExpect(jsonPath("$.id").value(MOCK_STYDENT_ID))
+                .andExpect(jsonPath("$.age").value(MOCK_STYDENT_AGE))
+                .andExpect(jsonPath("$.name").value(MOCK_STYDENT_NAME));
 
     }
 
     @Test
     public void updateTest() throws Exception {
-        Long id = 555L;
-        String name = "Инокентий";
 
-        JSONObject studentObject = new JSONObject();
-        studentObject.put("name", name);
-        Student student =new Student();
-        student.setId(id);
-        student.setName(name);
-
-        when(studentRepo.save(any(Student.class))).thenReturn(student);
-        when(studentRepo.findById(any(Long.class))).thenReturn(Optional.of(student));
+        when(studentRepo.save(any(Student.class))).thenReturn(MOCK_STUDENT);
+        JSONObject createStudent = new JSONObject();
+        createStudent.put("id", MOCK_STYDENT_ID);
+        createStudent.put("name", MOCK_STYDENT_NAME);
+        createStudent.put("age", MOCK_STYDENT_AGE);
 
         mockMvc.perform(MockMvcRequestBuilders
                         .put("/student/update") //send
-                        .content(studentObject.toString())
+                        .content(createStudent.toString())
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())//receive;
-                .andExpect(jsonPath("$.id").value(id))
-                .andExpect(jsonPath("$.name").value(name));
+                .andExpect(jsonPath("$.id").value(MOCK_STYDENT_ID))
+                .andExpect(jsonPath("$.age").value(MOCK_STYDENT_AGE))
+                .andExpect(jsonPath("$.name").value(MOCK_STYDENT_NAME));
 
     }
 
     @Test
     public void getTest() throws Exception {
-        Long id = 555L;
-        String name = "Инокентий";
-
-        JSONObject studentObject = new JSONObject();
-        studentObject.put("name", name);
-        Student student =new Student();
-        student.setId(id);
-        student.setName(name);
-
-
-        when(studentRepo.findById(any(Long.class))).thenReturn(Optional.of(student));
+        when(studentRepo.findById(any(Long.class))).thenReturn(Optional.of(MOCK_STUDENT));
 
         mockMvc.perform(MockMvcRequestBuilders
-                        .get("/student?id="+id) //send
+                        .get("/student?id=" + MOCK_STYDENT_ID) //send
                         .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())//receive;
-                .andExpect(jsonPath("$.id").value(id))
-                .andExpect(jsonPath("$.name").value(name));
+                .andExpect(jsonPath("$.id").value(MOCK_STYDENT_ID))
+                .andExpect(jsonPath("$.age").value(MOCK_STYDENT_AGE))
+                .andExpect(jsonPath("$.name").value(MOCK_STYDENT_NAME));
     }
 
     @Test
     public void searchTest() throws Exception {
-        Long id = 555L;
-        String name = "Инокентий";
-        int age = 20;
-
-        JSONObject studentObject = new JSONObject();
-        studentObject.put("name", name);
-        Student student =new Student();
-        student.setId(id);
-        student.setName(name);
-        student.setAge(age);
-
-
-        when(studentRepo.findByAge(any(Integer.class))).thenReturn(List.of(student));
+        when(studentRepo.findByAge(any(Integer.class))).thenReturn(MOCK_STUDENTS);
 
         mockMvc.perform(MockMvcRequestBuilders
-                        .get("/student/search?age="+age) //send
+                        .get("/student/search?age=" + MOCK_STYDENT_AGE) //send
                         .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk());//receive;
     }
 
     @Test
     public void searchAgePeriodTest() throws Exception {
-        Long id = 555L;
-        String name = "Инокентий";
-        int age = 20;
 
-        JSONObject studentObject = new JSONObject();
-        studentObject.put("name", name);
-        Student student =new Student();
-        student.setId(id);
-        student.setName(name);
-        student.setAge(age);
-        int min = age-1;
-        int max = age+1;
+        int min = MOCK_STYDENT_AGE - 1;
+        int max = MOCK_STYDENT_AGE + 1;
 
-
-        when(studentRepo.findByAge(any(Integer.class))).thenReturn(List.of(student));
+        when(studentRepo.findByAge(any(Integer.class))).thenReturn(MOCK_STUDENTS);
 
         mockMvc.perform(MockMvcRequestBuilders
-                        .get("/student//search-age?min="+min+"&max="+max) //send
+                        .get("/student//search-age?min=" + min + "&max=" + max) //send
                         .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk());//receive;
     }
 
     @Test
     public void searchStudentsInFacultyTest() throws Exception {
-
-        Long facultyId = 555L;
-        String facultyName = "Red";
-        String facultyColor = "Red";
-        Faculty faculty = new Faculty();
-        faculty.setName(facultyName);
-        faculty.setColor(facultyColor);
-        faculty.setId(facultyId);
-
-        Long id = 555L;
-        String name = "Инокентий";
-        int age = 20;
-
-        JSONObject studentObject = new JSONObject();
-        studentObject.put("name", name);
-        Student student =new Student();
-        student.setId(id);
-        student.setName(name);
-        student.setAge(age);
-        student.setFaculty(faculty);
-
-        when(studentRepo.findByAgeBetween(any(Integer.class),any(Integer.class))).thenReturn(List.of(student));
+        when(studentRepo.findByAgeBetween(any(Integer.class), any(Integer.class))).thenReturn(MOCK_STUDENTS);
 
         mockMvc.perform(MockMvcRequestBuilders
-                        .get("/student/search-faculty?name="+facultyName) //send
+                        .get("/student/search-faculty?name=" + MOCK_FACULTY_NAME) //send
+                        .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk());//receive;
+    }
+
+    @Test
+    public void searchFacultyForStudentTest() throws Exception {
+        when(studentRepo.findById(any(Long.class))).thenReturn(Optional.of(MOCK_STUDENT));
+
+        mockMvc.perform(MockMvcRequestBuilders
+                        .get("/student/faculty?id=" + MOCK_FACULTY_ID) //send
                         .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk());//receive;
     }

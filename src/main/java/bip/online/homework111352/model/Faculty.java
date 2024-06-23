@@ -3,6 +3,7 @@ package bip.online.homework111352.model;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.persistence.*;
+import lombok.Builder;
 import lombok.Data;
 
 import java.util.List;
@@ -10,6 +11,7 @@ import java.util.List;
 @Entity
 @Data
 @Schema(description = "Класс факультета")
+
 public class Faculty {
     @Schema(description = "Идентификатор",example ="1")
     @Id
@@ -22,6 +24,16 @@ public class Faculty {
     @JsonIgnore
     @OneToMany(mappedBy = "faculty")
     List<Student>students;
+
+    public Faculty() {
+
+    }
+
+    public Faculty(Long id, String name, String color) {
+        this.id = id;
+        this.name = name;
+        this.color = color;
+    }
 
     @Override
     public String toString() {

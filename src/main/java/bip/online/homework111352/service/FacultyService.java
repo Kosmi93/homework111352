@@ -38,4 +38,7 @@ public class FacultyService {
     public Collection<Faculty> findByName(String name) {
         return repo.findByNameIgnoreCase(name);
     }
+
+    public Collection<Faculty> getAll() { return  repo.findAll();
+    }
 }

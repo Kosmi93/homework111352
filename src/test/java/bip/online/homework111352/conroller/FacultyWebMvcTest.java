@@ -8,6 +8,7 @@ import bip.online.homework111352.service.AvatarService;
 import bip.online.homework111352.service.FacultyService;
 import bip.online.homework111352.service.ImageResize;
 import bip.online.homework111352.service.StudentService;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.json.JSONObject;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
@@ -19,13 +20,12 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
-import java.util.List;
 import java.util.Optional;
 
+import static bip.online.homework111352.TestConstant.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @WebMvcTest
 public class FacultyWebMvcTest {
@@ -34,6 +34,8 @@ public class FacultyWebMvcTest {
 
     @MockBean
     private FacultyRepo facultyRepo;
+
+    private ObjectMapper mapper = new ObjectMapper();
 
     @SpyBean
     private FacultyService facultyService;
@@ -63,101 +65,108 @@ public class FacultyWebMvcTest {
 
     @Test
     public void saveTest() throws Exception {
-        Long id = 555L;
-        String name = "Red";
-        String color = "Red";
-        JSONObject facultyObject = new JSONObject();
-        facultyObject.put("name", name);
-        Faculty faculty = new Faculty();
-        faculty.setName(name);
-        faculty.setColor(color);
-        faculty.setId(id);
 
-        when(facultyRepo.save(any(Faculty.class))).thenReturn(faculty);
-        when(facultyRepo.findById(any(Long.class))).thenReturn(Optional.of(faculty));
+        when(facultyRepo.save(any(Faculty.class))).thenReturn(MOCK_FACULTY);
+
+        JSONObject createFaculty = new JSONObject();
+        createFaculty.put("name", MOCK_FACULTY_NAME);
+        createFaculty.put("color", MOCK_FACULTY_COLOR);
 
         mockMvc.perform(MockMvcRequestBuilders
                         .post("/faculty") //send
-                        .content(facultyObject.toString())
+                        .content(createFaculty.toString())
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())//receive;
-                .andExpect(jsonPath("$.id").value(id))
-                .andExpect(jsonPath("$.name").value(name))
-                .andExpect(jsonPath("$.color").value(color));
+                .andExpect(jsonPath("$.id").value(MOCK_FACULTY_ID))
+                .andExpect(jsonPath("$.name").value(MOCK_FACULTY_NAME))
+                .andExpect(jsonPath("$.color").value(MOCK_FACULTY_COLOR));
     }
 
     @Test
     public void getTest() throws Exception {
-        Long id = 555L;
-        String name = "Red";
-        String color = "Red";
-        JSONObject facultyObject = new JSONObject();
-        facultyObject.put("name", name);
-        Faculty faculty = new Faculty();
-        faculty.setName(name);
-        faculty.setColor(color);
-        faculty.setId(id);
+        when(facultyRepo.findById(any(Long.class))).thenReturn(Optional.of(MOCK_FACULTY));
 
-        when(facultyRepo.findById(any(Long.class))).thenReturn(Optional.of(faculty));
         mockMvc.perform(MockMvcRequestBuilders
-                        .get("/faculty?id="+id) //send
+                        .get("/faculty?id=" + MOCK_FACULTY_ID) //send
+                        .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())//receive;
-                .andExpect(jsonPath("$.id").value(id))
-                .andExpect(jsonPath("$.name").value(name))
-                .andExpect(jsonPath("$.color").value(color));
+                .andExpect(jsonPath("$.name").value(MOCK_FACULTY_NAME))
+                .andExpect(jsonPath("$.color").value(MOCK_FACULTY_COLOR));
+
+    }
+
+    @Test
+    public void deleteTest() throws Exception {
+        when(facultyRepo.findById(any(Long.class))).thenReturn(Optional.of(MOCK_FACULTY));
+
+        mockMvc.perform(MockMvcRequestBuilders
+                        .delete("/faculty?id=" + MOCK_FACULTY_ID) //send
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk());
+
+    }
+
+    @Test
+    public void getAllTest() throws Exception {
+        when(facultyRepo.findAll()).thenReturn(MOCK_FACULTIES);
+
+        mockMvc.perform(MockMvcRequestBuilders
+                        .get("/faculty/all") //send
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())//receive;
+
+                .andExpect(content().json(mapper.writeValueAsString(MOCK_FACULTIES)));
+
     }
 
     @Test
     public void updateTest() throws Exception {
-        Long id = 555L;
-        String name = "Red";
-        String color = "Red";
-        JSONObject facultyObject = new JSONObject();
-        facultyObject.put("name", name);
-        Faculty faculty = new Faculty();
-        faculty.setName(name);
-        faculty.setColor(color);
-        faculty.setId(id);
+        when(facultyRepo.save(any(Faculty.class))).thenReturn(MOCK_FACULTY);
 
-        when(facultyRepo.save(any(Faculty.class))).thenReturn(faculty);
-        when(facultyRepo.findById(any(Long.class))).thenReturn(Optional.of(faculty));
+        JSONObject createFaculty = new JSONObject();
+        createFaculty.put("id", MOCK_FACULTY_ID);
+        createFaculty.put("name", MOCK_FACULTY_NAME);
+        createFaculty.put("color", MOCK_FACULTY_COLOR);
 
         mockMvc.perform(MockMvcRequestBuilders
-                        .post("/faculty") //send
-                        .content(facultyObject.toString())
+                        .put("/faculty/update") //send
+                        .content(createFaculty.toString())
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())//receive;
-                .andExpect(jsonPath("$.id").value(id))
-                .andExpect(jsonPath("$.name").value(name))
-                .andExpect(jsonPath("$.color").value(color));
+                .andExpect(jsonPath("$.id").value(MOCK_FACULTY_ID))
+                .andExpect(jsonPath("$.name").value(MOCK_FACULTY_NAME))
+                .andExpect(jsonPath("$.color").value(MOCK_FACULTY_COLOR));
+
     }
 
     @Test
-    public void searchTest() throws Exception {
-        Long id = 555L;
-        String name = "Red";
-        String color = "Red";
-        JSONObject facultyObject = new JSONObject();
-        facultyObject.put("name", name);
-        Faculty faculty = new Faculty();
-        faculty.setName(name);
-        faculty.setColor(color);
-        faculty.setId(id);
+    public void searchNameTest() throws Exception {
+        when(facultyRepo.findByNameIgnoreCase(MOCK_FACULTY_NAME)).thenReturn(MOCK_FACULTIES);
 
-        when(facultyRepo.findByNameIgnoreCase(any(String.class))).thenReturn(List.of(faculty));
         mockMvc.perform(MockMvcRequestBuilders
-                        .get("/faculty/search?name="+name) //send
+                        .get("/faculty/search?name="+MOCK_FACULTY_NAME) //send
+                        .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON))
-                .andExpect(status().isOk());//receive;
-
-        when(facultyRepo.findByColorIgnoreCase(any(String.class))).thenReturn(List.of(faculty));
-        mockMvc.perform(MockMvcRequestBuilders
-                        .get("/faculty/search?color="+color) //send
-                        .accept(MediaType.APPLICATION_JSON))
-                .andExpect(status().isOk());//receive;
+                .andExpect(status().isOk());
 
     }
+
+    @Test
+    public void searchColorTest() throws Exception {
+        when(facultyRepo.findByNameIgnoreCase(MOCK_FACULTY_COLOR)).thenReturn(MOCK_FACULTIES);
+
+        mockMvc.perform(MockMvcRequestBuilders
+                        .get("/faculty/search?name="+MOCK_FACULTY_COLOR) //send
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(content().json(mapper.writeValueAsString(MOCK_FACULTIES)));
+
+    }
+
 }
