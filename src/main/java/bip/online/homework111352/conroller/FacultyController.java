@@ -4,8 +4,13 @@ import bip.online.homework111352.model.Faculty;
 import bip.online.homework111352.service.FacultyService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.Collection;
+import java.util.Collections;
+
 
 @RestController
 @RequestMapping("/faculty")
@@ -15,6 +20,22 @@ public class FacultyController {
 
     public FacultyController(FacultyService service) {
         this.service = service;
+    }
+
+    @GetMapping("/all")
+    public ResponseEntity<Collection<Faculty>> getAll() {
+        return ResponseEntity.ok(service.getAll());
+    }
+
+    @GetMapping("/search")
+    public ResponseEntity<Collection<Faculty>> findFaculties(@RequestParam(required = false) String color, @RequestParam(required = false) String name) {
+        if (color != null && !color.isBlank()) {
+            return ResponseEntity.ok(service.findByColor(color));
+        }
+        if (name != null && !name.isBlank()) {
+            return ResponseEntity.ok(service.findByName(name));
+        }
+        return ResponseEntity.ok(Collections.emptyList());
     }
 
     @Operation(
@@ -35,7 +56,12 @@ public class FacultyController {
     )
     @GetMapping
     public ResponseEntity<Faculty> get(@RequestParam Long id) {
-        return ResponseEntity.ok(service.findById(id));
+        if (service.findById(id).isEmpty()) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+        } else {
+            return ResponseEntity.ok(service.findById(id).get());
+        }
+
     }
 
     @Operation(
@@ -44,8 +70,12 @@ public class FacultyController {
     )
     @DeleteMapping
     public ResponseEntity delete(@RequestParam Long id) {
-        service.delete(id);
-        return ResponseEntity.ok().build();
+        if (service.findById(id).isEmpty()) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+        } else {
+            service.delete(id);
+            return ResponseEntity.ok().build();
+        }
     }
 
     @Operation(
@@ -56,4 +86,6 @@ public class FacultyController {
     public ResponseEntity<Faculty> update(@RequestBody Faculty faculty) {
         return ResponseEntity.ok(service.update(faculty));
     }
+
+
 }
