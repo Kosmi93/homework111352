@@ -1,49 +1,67 @@
 package bip.online.homework111352.service;
 
+import bip.online.homework111352.model.Faculty;
 import bip.online.homework111352.model.Student;
+import bip.online.homework111352.repo.FacultyRepo;
+import bip.online.homework111352.repo.StudentRepo;
 import org.springframework.stereotype.Service;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+import java.util.Optional;
 
 @Service
-public class StudentService implements CRUDRepository<Student, Long> {
+public class StudentService {
+    private final StudentRepo studentRepo;
+    private final FacultyRepo facultyRepo;
 
-    private final Map<Long, Student> students;
-    private Long count;
-
-    public StudentService() {
-        this.students = new HashMap<>();
-        count = 0L;
+    public StudentService(StudentRepo repo, FacultyRepo facultyRepo) {
+        this.studentRepo = repo;
+        this.facultyRepo = facultyRepo;
     }
 
-    @Override
-    public Student save(Student data) {
-        if (data != null) {
-            data.setId(count);
-            students.put(count, data);
-            count++;
-        } else
-            throw new RuntimeException("В системе нельзя хранить null");
-        return data;
+    public Collection<Student> findByAge(int age) {
+        return studentRepo.findByAge(age);
     }
 
-    @Override
+    public Student update(Student student) {
+        return studentRepo.save(student);
+    }
+
     public void delete(Long id) {
-        students.remove(id);
+        studentRepo.deleteById(id);
     }
 
-    @Override
-    public Student update(Student data) {
-        if (data != null) {
-            students.replace(data.getId(), data);
+    public Optional<Student> findById(Long id) {
+        return studentRepo.findById(id);
+    }
+
+    public Student save(Student student) {
+        return studentRepo.save(student);
+    }
+
+    public Collection<Student> findByAge(int min, int max){
+        return studentRepo.findByAgeBetween(min,max);
+    }
+
+    public Collection<Student> findByFaculty(String name){
+        List<Faculty> faculties =  new ArrayList<>(facultyRepo.findByNameIgnoreCase(name));
+        if(!faculties.isEmpty()){
+            return studentRepo.findStudentByFaculty(faculties.get(0));
         } else
-            throw new RuntimeException("В системе нельзя хранить null");
-        return data;
+            return List.of();
     }
 
-    @Override
-    public Student findById(Long id) {
-        return students.get(id);
+    public int getCount(){
+        return studentRepo.countStudents();
+    }
+
+    public double getAvgAge(){
+        return studentRepo.avgAge();
+    }
+
+    public Collection<Student> getEndFive(){
+        return studentRepo.endFiveStudents();
     }
 }
