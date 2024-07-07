@@ -1,49 +1,50 @@
 package bip.online.homework111352.service;
 
 import bip.online.homework111352.model.Faculty;
+import bip.online.homework111352.repo.FacultyRepo;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.Collection;
+import java.util.Optional;
 
 @Service
-public class FacultyService implements CRUDRepository<Faculty, Long> {
+public class FacultyService {
+    private final FacultyRepo repo;
+    private Logger logger = LoggerFactory.getLogger(FacultyService.class);
 
-    private final Map<Long, Faculty> faculties;
-    private Long count;
-
-    public FacultyService() {
-        this.faculties = new HashMap<>();
-        count = 0L;
+    public FacultyService(FacultyRepo repo) {
+        this.repo = repo;
     }
 
-    @Override
-    public Faculty save(Faculty data) {
-        if (data != null) {
-            data.setId(count);
-            faculties.put(count, data);
-            count++;
-        } else
-            throw new RuntimeException("В системе нельзя хранить null");
-        return data;
+    public Faculty save(Faculty faculty) {
+        logger.info("Сохранение факультета");
+        return repo.save(faculty);
     }
 
-    @Override
+    public Optional<Faculty> findById(Long id) {
+        logger.info("Поиск факультета по id");
+        return repo.findById(id);
+    }
+
     public void delete(Long id) {
-        faculties.remove(id);
+        logger.info("Удаление факультета по id");
+        repo.deleteById(id);
     }
 
-    @Override
-    public Faculty update(Faculty data) {
-        if (data != null) {
-            faculties.replace(data.getId(), data);
-        } else
-            throw new RuntimeException("В системе нельзя хранить null");
-        return data;
+    public Faculty update(Faculty faculty) {
+        logger.info("Обновление информации о факультете");
+        return repo.save(faculty);
     }
 
-    @Override
-    public Faculty findById(Long id) {
-        return faculties.get(id);
+    public Collection<Faculty> findByColor(String color) {
+        logger.info("Поиск факультета по цвету");
+        return repo.findByColorIgnoreCase(color);
+    }
+
+    public Collection<Faculty> findByName(String name) {
+        logger.info("Поиск факультета по имени");
+        return repo.findByNameIgnoreCase(name);
     }
 }

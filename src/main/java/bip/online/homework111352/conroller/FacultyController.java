@@ -7,6 +7,10 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Collection;
+import java.util.Collections;
+
+
 @RestController
 @RequestMapping("/faculty")
 @Tag(name = "Контроллер по работе с факультетами", description = "Контроллер выполняет операции с факультетами в университете")
@@ -15,6 +19,17 @@ public class FacultyController {
 
     public FacultyController(FacultyService service) {
         this.service = service;
+    }
+
+    @GetMapping("/search")
+    public ResponseEntity<Collection<Faculty>> findFaculties(@RequestParam(required = false) String color, @RequestParam(required = false) String name) {
+        if (color != null && !color.isBlank()){
+            return ResponseEntity.ok(service.findByColor(color));
+        }
+        if(name != null && !name.isBlank()) {
+            return ResponseEntity.ok(service.findByName(name));
+        }
+        return ResponseEntity.ok(Collections.emptyList());
     }
 
     @Operation(
@@ -35,7 +50,7 @@ public class FacultyController {
     )
     @GetMapping
     public ResponseEntity<Faculty> get(@RequestParam Long id) {
-        return ResponseEntity.ok(service.findById(id));
+        return ResponseEntity.ok(service.findById(id).orElseThrow());
     }
 
     @Operation(
@@ -56,4 +71,6 @@ public class FacultyController {
     public ResponseEntity<Faculty> update(@RequestBody Faculty faculty) {
         return ResponseEntity.ok(service.update(faculty));
     }
+
+
 }
