@@ -5,6 +5,8 @@ import bip.online.homework111352.model.Student;
 import bip.online.homework111352.service.StudentService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -16,6 +18,8 @@ import java.util.Collections;
 @Tag(name = "Контроллер по работе со студентами", description = "Контроллер выполняет операции со студентами в университете")
 public class StudentController {
     private final StudentService service;
+
+
 
     public StudentController(StudentService service) {
         this.service = service;
