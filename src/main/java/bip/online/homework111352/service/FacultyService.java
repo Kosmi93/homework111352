@@ -47,4 +47,8 @@ public class FacultyService {
         logger.info("Поиск факультета по имени");
         return repo.findByNameIgnoreCase(name);
     }
+
+    public  Collection<Faculty> findAll(){
+        return repo.findAll();
+    }
 }

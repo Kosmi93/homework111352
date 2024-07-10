@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Comparator;
 
 
 @RestController
@@ -19,6 +20,16 @@ public class FacultyController {
 
     public FacultyController(FacultyService service) {
         this.service = service;
+    }
+
+    @Operation(
+            summary = "Получение факультета",
+            description = "Позволяет получить факультет с самым длинным названием"
+    )
+    @GetMapping("/long-name")
+    public ResponseEntity<String> getLongName() {
+        Faculty result = Collections.max(service.findAll(), Comparator.comparing(s->s.getName().length()));
+        return ResponseEntity.ok(result.getName());
     }
 
     @GetMapping("/search")

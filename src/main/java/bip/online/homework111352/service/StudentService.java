@@ -28,6 +28,9 @@ public class StudentService {
         logger.info("Поиск студентов заданного возраста");
         return studentRepo.findByAge(age);
     }
+    public Collection<Student> findByAll(){
+        return studentRepo.findAll();
+    }
 
     public Student update(Student student) {
         logger.info("Обновление информации о студенте");

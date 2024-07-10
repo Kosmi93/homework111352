@@ -10,19 +10,42 @@ import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Collection;
-import java.util.Collections;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/student")
 @Tag(name = "Контроллер по работе со студентами", description = "Контроллер выполняет операции со студентами в университете")
 public class StudentController {
     private final StudentService service;
-
-
-
     public StudentController(StudentService service) {
         this.service = service;
+    }
+
+    @Operation(summary = "Получение среднего возраста студентов", description = "Позволяет получить средний возраст студентов")
+        @GetMapping("/get-avg")
+    public ResponseEntity<Double> getAvgAgeV2() {
+        OptionalDouble result = service.findByAll()
+                .stream()
+               .mapToInt(Student::getAge)
+                .average();
+        System.out.println(result);
+        return ResponseEntity.ok(result.orElseThrow());
+    }
+
+    @Operation(summary = "Получение отсортированного списка студентов", description = "Позволяет получить список" +
+            " студентов отсортированных по алфавиту")
+    @GetMapping("/get-all")
+    public ResponseEntity<List<String>> getAll() {
+        List<String> result = service.findByAll()
+                .stream()
+                .filter(s -> s.getName().toUpperCase().startsWith("А"))
+                .sorted(Comparator.comparing(Student::getName))
+                .map(Student::getName)
+                .map(String::toUpperCase)
+                .toList();
+        System.out.println(result);
+        return ResponseEntity.ok(result);
     }
 
     @Operation(summary = "Регистрация студентов", description = "Позволяет добавлять студентов в систему")
