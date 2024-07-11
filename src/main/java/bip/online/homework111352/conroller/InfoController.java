@@ -1,5 +1,6 @@
 package bip.online.homework111352.conroller;
 
+import bip.online.homework111352.service.InfoService;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -12,8 +13,13 @@ import java.util.stream.Stream;
 @RequestMapping("/info")
 public class InfoController {
 
+    private final InfoService service;
     @Value("${server.port}")
     private String port;
+
+    public InfoController(InfoService service) {
+        this.service = service;
+    }
 
     @GetMapping("/port")
     public ResponseEntity getPort(){
@@ -22,8 +28,8 @@ public class InfoController {
 
     @GetMapping("/sums")
     public ResponseEntity getSum(){
-        int sum = Stream.iterate(1, a -> a +1).parallel() .limit(1_000_000) .reduce(0, (a, b) -> a + b );
-        return ResponseEntity.ok(sum);
+
+        return ResponseEntity.ok(service.getSum());
     }
 
 }

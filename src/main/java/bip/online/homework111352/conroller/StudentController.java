@@ -25,27 +25,14 @@ public class StudentController {
     @Operation(summary = "Получение среднего возраста студентов", description = "Позволяет получить средний возраст студентов")
         @GetMapping("/get-avg")
     public ResponseEntity<Double> getAvgAgeV2() {
-        OptionalDouble result = service.findByAll()
-                .stream()
-               .mapToInt(Student::getAge)
-                .average();
-        System.out.println(result);
-        return ResponseEntity.ok(result.orElseThrow());
+        return ResponseEntity.ok(service.getAvgAgeV2().orElseThrow());
     }
 
     @Operation(summary = "Получение отсортированного списка студентов", description = "Позволяет получить список" +
             " студентов отсортированных по алфавиту")
     @GetMapping("/get-all")
     public ResponseEntity<List<String>> getAll() {
-        List<String> result = service.findByAll()
-                .stream()
-                .filter(s -> s.getName().toUpperCase().startsWith("А"))
-                .sorted(Comparator.comparing(Student::getName))
-                .map(Student::getName)
-                .map(String::toUpperCase)
-                .toList();
-        System.out.println(result);
-        return ResponseEntity.ok(result);
+        return ResponseEntity.ok(service.findAll());
     }
 
     @Operation(summary = "Регистрация студентов", description = "Позволяет добавлять студентов в систему")

@@ -8,10 +8,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 @Service
 public class StudentService {
@@ -79,5 +76,24 @@ public class StudentService {
     public Collection<Student> getEndFive(){
         logger.info("Получение");
         return studentRepo.endFiveStudents();
+    }
+
+    public OptionalDouble getAvgAgeV2() {
+        OptionalDouble result = studentRepo.findAll()
+                .stream()
+                .mapToInt(Student::getAge)
+                .average();
+        return result;
+    }
+
+    public List<String> findAll() {
+        List<String> result = studentRepo.findAll()
+                .stream()
+                .filter(s -> s.getName().toUpperCase().startsWith("А"))
+                .sorted(Comparator.comparing(Student::getName))
+                .map(Student::getName)
+                .map(String::toUpperCase)
+                .toList();
+        return result;
     }
 }

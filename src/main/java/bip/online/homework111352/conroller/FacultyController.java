@@ -28,8 +28,7 @@ public class FacultyController {
     )
     @GetMapping("/long-name")
     public ResponseEntity<String> getLongName() {
-        Faculty result = Collections.max(service.findAll(), Comparator.comparing(s->s.getName().length()));
-        return ResponseEntity.ok(result.getName());
+        return ResponseEntity.ok(service.findLongName().orElseThrow());
     }
 
     @GetMapping("/search")

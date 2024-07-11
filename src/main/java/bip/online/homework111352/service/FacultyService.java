@@ -7,6 +7,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Optional;
 
 @Service
@@ -50,5 +52,11 @@ public class FacultyService {
 
     public  Collection<Faculty> findAll(){
         return repo.findAll();
+    }
+
+    public Optional<String> findLongName() {
+        Optional<String> result = repo.findAll().stream().map(Faculty::getName).max(Comparator.comparing(String::length));
+
+        return result;
     }
 }
