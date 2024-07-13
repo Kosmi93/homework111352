@@ -1,59 +1,126 @@
 package bip.online.homework111352.conroller;
 
+import bip.online.homework111352.model.Faculty;
 import bip.online.homework111352.model.Student;
 import bip.online.homework111352.service.StudentService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.*;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/student")
 @Tag(name = "Контроллер по работе со студентами", description = "Контроллер выполняет операции со студентами в университете")
 public class StudentController {
     private final StudentService service;
-
     public StudentController(StudentService service) {
         this.service = service;
     }
 
-    @Operation(
-            summary = "Регистрация студентов",
-            description = "Позволяет добавлять студентов в систему"
-    )
+    @Operation(summary = "Получение среднего возраста студентов", description = "Позволяет получить средний возраст студентов")
+        @GetMapping("/get-avg")
+    public ResponseEntity<Double> getAvgAgeV2() {
+        return ResponseEntity.ok(service.getAvgAgeV2().orElseThrow());
+    }
+
+    @Operation(summary = "Получение отсортированного списка студентов", description = "Позволяет получить список" +
+            " студентов отсортированных по алфавиту")
+    @GetMapping("/get-all")
+    public ResponseEntity<List<String>> getAll() {
+        return ResponseEntity.ok(service.findAll());
+    }
+
+    @Operation(summary = "Регистрация студентов", description = "Позволяет добавлять студентов в систему")
     @PostMapping
     public ResponseEntity<Student> save(@RequestBody Student student) {
-        if (student != null)
-            return ResponseEntity.ok(service.save(student));
-        else
-            return ResponseEntity.noContent().build();
+        if (student != null) return ResponseEntity.ok(service.save(student));
+        else return ResponseEntity.noContent().build();
     }
 
-    @Operation(
-            summary = "Получение студента",
-            description = "Позволяет получить студента из системы по его id"
-    )
+    @Operation(summary = "Получение студента", description = "Позволяет получить студента из системы по его id")
     @GetMapping
     public ResponseEntity<Student> get(@RequestParam Long id) {
-        return ResponseEntity.ok(service.findById(id));
+        return ResponseEntity.ok(service.findById(id).orElseThrow());
     }
 
-    @Operation(
-            summary = "Удаление студента",
-            description = "Позволяет удалить студента из системы по его id"
-    )
+    @Operation(summary = "Удаление студента", description = "Позволяет удалить студента из системы по его id")
     @DeleteMapping
     public ResponseEntity delete(@RequestParam Long id) {
         service.delete(id);
         return ResponseEntity.ok().build();
     }
 
-    @Operation(
-            summary = "Редактирование студента",
-            description = "Позволяет отредактировать студента в системе"
-    )
+    @Operation(summary = "Редактирование студента", description = "Позволяет отредактировать студента в системе")
     @PutMapping("/update")
     public ResponseEntity<Student> update(@RequestBody Student student) {
         return ResponseEntity.ok(service.update(student));
+    }
+
+    @Operation(summary = "Поиск студентов конкретного возраста", description = "Позволяет найти студентов с заданным возрастом")
+    @GetMapping("/search")
+    public ResponseEntity<Collection<Student>> findStudents(@RequestParam int age) {
+        if (age > 0) {
+            return ResponseEntity.ok(service.findByAge(age));
+        }
+        return ResponseEntity.ok(Collections.emptyList());
+    }
+
+    @Operation(summary = "Поиск студентов по заданному диапазону возрастов", description = "Позволяет найти студентов по заданному диапазону возрастов")
+    @GetMapping("/search-age")
+    public ResponseEntity<Collection<Student>> findAge(@RequestParam int min, @RequestParam int max) {
+        if (max > min) {
+            return ResponseEntity.ok(service.findByAge(min, max));
+        }
+        return ResponseEntity.noContent().build();
+    }
+
+    @Operation(summary = "Поиск студентов факультета", description = "Позволяет найти всех студентов заданном факультете")
+    @GetMapping("/search-faculty")
+    public ResponseEntity<Collection<Student>> findStudentInFaculty(@RequestParam String name) {
+        if (!name.isBlank()) {
+            return ResponseEntity.ok(service.findByFaculty(name));
+        }
+        return ResponseEntity.noContent().build();
+    }
+
+    @Operation(summary = "Получение факультета студента", description = "Позволяет получить факультет студента")
+    @GetMapping("/faculty")
+    public ResponseEntity<Faculty> getFacultyForStudent(@RequestParam Long id) {
+        return ResponseEntity.ok(service.findById(id).orElseThrow().getFaculty());
+    }
+
+    @Operation(summary = "Получениt количества студентов", description = "Позволяет получить количество студентов в школе")
+    @GetMapping("/count")
+    public ResponseEntity<Integer> getCount() {
+        return ResponseEntity.ok(service.getCount());
+    }
+
+    @Operation(summary = "Получение среднего возраста студентов", description = "Позволяет получить средний возраст студентов")
+    @GetMapping("/avg")
+    public ResponseEntity<Double> getAvgAge() {
+        return ResponseEntity.ok(service.getAvgAge());
+    }
+
+    @Operation(summary = "Последние 5 студентов", description = "Позволяет только пять последних студентов")
+    @GetMapping("/last-five")
+    public ResponseEntity<Collection<Student>> getLastFive() {
+            return ResponseEntity.ok(service.getEndFive());
+    }
+
+    @Operation(summary = "Вывод списка", description = "Получение списка студентов в параллельном режиме")
+    @GetMapping("/print-parallel")
+    public void printParallel() {
+        service.printParallel();
+    }
+
+    @Operation(summary = "Вывод списка", description = "Получение списка студентов в синхронизированном параллельном режиме")
+    @GetMapping("/print-synchronized")
+    public void printParallelSynchronized() {
+        service.printSynchronized();
     }
 }
