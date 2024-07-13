@@ -96,4 +96,30 @@ public class StudentService {
                 .toList();
         return result;
     }
+
+    public void printParallel() {
+        printName(0,1);
+        new Thread(()->
+                printName(2,3)).start();
+        new Thread(()->
+                printName(4,5)).start();
+    }
+
+    private void printName(int num1, int num2){
+        System.out.println(studentRepo.findAll().get(num1));
+        System.out.println(studentRepo.findAll().get(num2));
+    }
+
+    private synchronized void printNameSynchronized(int num1, int num2){
+        System.out.println(studentRepo.findAll().get(num1));
+        System.out.println(studentRepo.findAll().get(num2));
+    }
+
+    public void printSynchronized() {
+        printNameSynchronized(0,1);
+        new Thread(()->
+                printNameSynchronized(2,3)).start();
+        new Thread(()->
+                printNameSynchronized(4,5)).start();
+    }
 }

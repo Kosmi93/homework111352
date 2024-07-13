@@ -111,4 +111,16 @@ public class StudentController {
     public ResponseEntity<Collection<Student>> getLastFive() {
             return ResponseEntity.ok(service.getEndFive());
     }
+
+    @Operation(summary = "Вывод списка", description = "Получение списка студентов в параллельном режиме")
+    @GetMapping("/print-parallel")
+    public void printParallel() {
+        service.printParallel();
+    }
+
+    @Operation(summary = "Вывод списка", description = "Получение списка студентов в синхронизированном параллельном режиме")
+    @GetMapping("/print-synchronized")
+    public void printParallelSynchronized() {
+        service.printSynchronized();
+    }
 }
